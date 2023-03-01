@@ -1,0 +1,2 @@
+# openai_python_project
+用于实验flask下调用openai
