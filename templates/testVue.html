@@ -1,0 +1,62 @@
+<!DoCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='js/element-index.css')}}">
+</head>
+<body>
+  <div id="app">
+    <el-input v-model="input" placeholder="请输入想生成的图片"></el-input>
+    <el-button @click="createPic">生成图片</el-button>
+    <div class="demo-image__preview">
+    <el-image 
+     style="width: 600px; height: 600px"
+    :src="url" 
+    :preview-src-list="srcList">
+    </el-image>
+</div>
+  </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="{{ url_for('static',filename='js/vue.js')}}"></script>
+  <!-- import JavaScript -->
+  <script src="{{ url_for('static',filename='js/element-index.js')}}"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {
+        input:'', 
+	message:'xxxxxxxxx', 
+	url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+        srcList: [
+          'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+        ] 
+}
+      },
+   methods:{
+	createPic(){
+$.ajax({
+              url: '/createPic',  // enter your flask endpoint here
+              type: "GET",
+              data: "input="+this.input,
+              dataType: 'text',
+              success: function(response) {
+                  // check response and update answer box
+                  if (response) {
+                      this.url=response
+                  } else {
+                      alert("没有找到答案，请重新提问.");
+                  }
+              },
+              error: function(xhr) {
+                alert("异常: " + xhr.status + " " + xhr.statusText);
+              }
+            });
+		     }
+	}
+    })
+  </script>
+</html>
+

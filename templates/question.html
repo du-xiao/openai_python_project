@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>  
+<meta charset="utf-8" />
+<title>AI问答系统</title>
+<link href="{{ url_for('static',filename='js/element-index.css')}}" rel="stylesheet">
+<style>
+    .question-container {
+        padding: 10px;
+    }
+    .questions {
+        padding: 10px;
+    }
+    .answers {
+        padding: 10px;
+    }
+</style>
+</head>
+ <body>
+    <div id="easyVue"  class="question-container">
+        <h2>chatGPT-AI问答系统</h2>
+        <form>
+	<el-tag type="success" v-text="message"></el-tag>
+            <div class="questions">
+                <label style="display:block">问题:</label>
+                <input type="text" id="question" name="提问" placeholder="在这里提问..."/>
+            </div>
+            <div class="answers">
+                <label style='display:block'>回答:</label>
+                <textarea style='height:600px;width:300px'  name="回答" disabled placeholder ="答案将展示在这里..." ></textarea>
+            </div>
+            <input type="submit" value="提交"/>
+        </form>
+    </div>
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/element-index.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue.js') }}"></script>
+ <script>
+    var firstVue;
+    $(function(){
+        firstVue = new Vue({
+                el:'easyVue',
+                data:{
+                        message:'hello vue'
+                },
+                methods:{}
+
+                })
+});
+    $(document).ready(function(){
+         // Submit button click event
+        $('form').on('submit', function(event){
+            event.preventDefault();
+             // Send the data to flask
+            $.ajax({
+              url: '/callChatGPT',  // enter your flask endpoint here
+              type: "GET",
+              data: "input="+$('#question').val(),
+              dataType: 'text',
+              success: function(response) {
+                console.log(JSON.stringify(response))
+                  // check response and update answer box
+                  if (response) {
+               
+                      $('.answers textarea').val(response);
+                  } else {
+                      alert("没有找到答案，请重新提问.");
+                  }
+              },
+              error: function(xhr) {
+                alert("异常: " + xhr.status + " " + xhr.statusText);
+              }
+            });
+        });
+    });
+</script>
+ </body>
+</html>
+
