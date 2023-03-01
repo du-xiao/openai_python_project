@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, url_for,jsonify
 from flask_cors import CORS
 import os
 import openai
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -37,8 +38,11 @@ def callChatGPT():
 def createPic():
     data = request.json
     input = data['input']
-    openai.api_key = "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"
-    # openai.api_key = os.getenv("OPENAI_API_KEY")
+    #openai.api_key = "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"
+    # 加载环境变量配置文件
+    load_dotenv('.env')
+    # 获取环境变量的值
+    openai.api_key = os.environ.get('OPENAI_API_KEY')
     # response =  openai.Completion.create(model="text-davinci-003",prompt=input,temperature=0.5,max_tokens=500,frequency_penalty=0.0,presence_penalty=0.0)
     response = openai.Image.create(prompt=input, n=1, size="1024x1024")
     image_url = response['data'][0]['url']
